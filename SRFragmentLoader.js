@@ -100,7 +100,6 @@ function FragmentLoader(config) {
             );
         };
 
-        segmentRequestList.push(req);
         request.requestStartDate = new Date();
         lastTraceTime = request.requestStartDate;
 
