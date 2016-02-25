@@ -102,11 +102,7 @@ function FragmentLoader(config) {
         req.open('GET', requestModifier.modifyRequestURL(request.url), true);
         req.responseType = 'arraybuffer';
         req = requestModifier.modifyRequestHeader(req);
-        /*
-         req.setRequestHeader("Cache-Control", "no-cache");
-         req.setRequestHeader("Pragma", "no-cache");
-         req.setRequestHeader("If-Modified-Since", "Sat, 1 Jan 2000 00:00:00 GMT");
-         */
+
         if (request.range) {
             req.setRequestHeader('Range', 'bytes=' + request.range);
         }
