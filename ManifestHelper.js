@@ -5,7 +5,8 @@ class ManifestHelper {
         let getManifestModel,
             getDashManifestModel,
             getIndexHandler,
-            getTimelineConverter;
+            getTimelineConverter,
+            getEventBus;
 
         function StreamSR () {
             let factory = this.factory,
@@ -32,6 +33,10 @@ class ManifestHelper {
             getTimelineConverter = function () {
                 return factory.getSingletonInstance(context, "TimelineConverter");
             };
+
+            getEventBus = function () {
+                return factory.getSingletonInstance(context, "EventBus");
+            }
         }
 
         player.extend("Stream", StreamSR, true);
@@ -51,6 +56,10 @@ class ManifestHelper {
         this._getTimelineConverter = function () {
             return getTimelineConverter ? getTimelineConverter() : undefined;
         };
+
+        this.getEventBus = function () {
+            return getEventBus ? getEventBus() : undefined;
+        };
     }
 
     getSegmentList (trackView) {
@@ -65,7 +74,7 @@ class ManifestHelper {
         var period = dashManifestModel.getRegularPeriods(manifest, mpd)[trackView.periodId];
         var adaptation = dashManifestModel.getAdaptationsForPeriod(manifest, period)[trackView.adaptationSetId];
         var representation = dashManifestModel.getRepresentationsForAdaptation(manifest, adaptation)[trackView.representationId];
-        var isDynamic = manifest.type !== "static";
+        var isDynamic = this.isLive();
         representation.segmentAvailabilityRange = timelineConverter.calcSegmentAvailabilityRange(representation, isDynamic); //TODO: we might want to offset that range to get segments that go further than dash.js buffer zone
         return indexHandler.getSegments(representation);
     }
@@ -73,6 +82,15 @@ class ManifestHelper {
     getSegment (segmentView) {
         var representation = this.getRepresentation(segmentView.trackView);
         return representation.segments[segmentView.segmentId];
+    }
+
+    isLive () {
+        var manifest = this._getManifest(),
+            dashManifestModel = this._getDashManifestModel();
+
+        if (!manifest || !dashManifestModel) throw new Error("Tried to get representation we could have access to dash.js manifest internals");
+
+        return dashManifestModel.getIsDynamic(manifest);
     }
 
 }

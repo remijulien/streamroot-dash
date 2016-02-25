@@ -18,7 +18,7 @@
                 var url = "http://dash.edgesuite.net/envivio/Envivio-dash2/manifest.mpd";
 
 
-
+                if (url !== "http://dash.edgesuite.net/envivio/Envivio-dash2/manifest.mpd") throw new Error("hardcoded stream specific stuff in PlayerInterface._createOnTrackChangeListener. Make the update")
 
                 var player = dashjs.MediaPlayer().create();
                 var dashjsWrapper = new DashjsWrapper(player);
