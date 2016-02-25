@@ -35,6 +35,9 @@ import FactoryMaker from '../core/FactoryMaker.js';
 import Debug from '../core/Debug.js';
 import MediaPlayerModel from './models/MediaPlayerModel.js';
 
+import SegmentView from './SegmentView';
+import TrackView from './TrackView';
+
 function FragmentLoader(config) {
 
     let context = this.context;
@@ -46,21 +49,21 @@ function FragmentLoader(config) {
 
     let instance,
         mediaPlayerModel,
-        xhrs;
+        segmentRequestList;
 
     function setup() {
         mediaPlayerModel = MediaPlayerModel(context).getInstance();
-        xhrs = [];
+        segmentRequestList = [];
     }
 
     function doLoad(request, remainingAttempts) {
-        var req = new XMLHttpRequest();
         var traces = [];
         var firstProgress = true;
         var needFailureReport = true;
         var lastTraceTime = null;
         var lastTraceReceivedCount = 0;
         var self = this;
+
         var handleLoaded = function (requestVO, succeeded) {
             needFailureReport = false;
 
@@ -83,31 +86,29 @@ function FragmentLoader(config) {
                 null,
                 request.type,
                 request.url,
-                req.responseURL || null,
+                null, // Was xhr.responseURL, can't get it. TODO: maybe on error, with xhrEvent.target
                 request.range,
                 request.requestStartDate,
                 requestVO.firstByteDate,
                 requestVO.requestEndDate,
                 req.status,
                 request.duration,
-                req.getAllResponseHeaders(),
+                null, // Was xhr.getAllResponseHeaders, can't get it. TODO: maybe on error, with xhrEvent.target
                 succeeded ? traces : null
             );
         };
 
-        xhrs.push(req);
+        segmentRequestList.push(req);
         request.requestStartDate = new Date();
         lastTraceTime = request.requestStartDate;
 
-        req.open('GET', requestModifier.modifyRequestURL(request.url), true);
-        req.responseType = 'arraybuffer';
-        req = requestModifier.modifyRequestHeader(req);
-
+        var headers = [];
+        req = requestModifier.modifyRequestHeader(req); // TODO: create helper with method setRequestHeader that fills our headers array?
         if (request.range) {
-            req.setRequestHeader('Range', 'bytes=' + request.range);
+            headers.push(["Range", 'bytes=' + request.range]);
         }
 
-        req.onprogress = function (event) {
+        onProgress = function (event) {
             var currentTime = new Date();
 
             if (firstProgress) {
@@ -133,21 +134,12 @@ function FragmentLoader(config) {
             eventBus.trigger(Events.LOADING_PROGRESS, {request: request});
         };
 
-        req.onload = function () {
-            if (req.status < 200 || req.status > 299) return;
+        onSuccess = function (segmentData, stats) {
             handleLoaded(request, true);
             eventBus.trigger(Events.LOADING_COMPLETED, {request: request, response: req.response, sender: instance});
         };
 
-        req.onloadend = req.onerror = function () {
-            if (xhrs.indexOf(req) === -1) {
-                return;
-            } else {
-                xhrs.splice(xhrs.indexOf(req), 1);
-            }
-
-            if (!needFailureReport) return;
-
+        onError = function () {
             handleLoaded(request, false);
 
             if (remainingAttempts > 0) {
@@ -158,7 +150,7 @@ function FragmentLoader(config) {
                 }, mediaPlayerModel.getFragmentRetryInterval());
             } else {
                 log('Failed loading fragment: ' + request.mediaType + ':' + request.type + ':' + request.startTime + ' no retry attempts left');
-                errHandler.downloadError('content', request.url, req);
+                errHandler.downloadError('content', request.url, req); //TODO: what about this guy?
                 eventBus.trigger(Events.LOADING_COMPLETED, {
                     request: request,
                     bytes: null,
@@ -168,7 +160,30 @@ function FragmentLoader(config) {
             }
         };
 
-        req.send();
+        if (!window.streamrootDownloader) {
+            throw new Error("streamrootDownloader is not defined")
+        }
+
+        let trackView = new TrackView({
+            periodId: request.mediaInfo.streamInfo.index,
+            adaptationSetId: request.mediaInfo.index,
+            representationId: request.quality
+        });
+        let segmentView = new SegmentView({
+            trackView,
+            segmentId: Math.round(request.startTime * 10)
+        })
+
+        let segmentRequest = window.streamrootDownloader.getSegment({
+            url: requestModifier.modifyRequestURL(request.url),
+            headers
+        }, {
+            onSuccess,
+            onProgress,
+            onError
+        }, segmentView);
+
+        segmentRequestList.push(segmentRequest);
     }
 
     function checkForExistence(request) {
@@ -212,19 +227,20 @@ function FragmentLoader(config) {
     }
 
     function abort() {
+        //TODO: didn't do the modifs here
         var i,
             req;
-        var ln = xhrs.length;
+        var ln = segmentRequestList.length;
 
         for (i = 0; i < ln; i++) {
-            req = xhrs[i];
-            xhrs[i] = null;
+            req = segmentRequestList[i];
+            segmentRequestList[i] = null;
             if (!req) continue;
             req.abort();
             req = null;
         }
 
-        xhrs = [];
+        segmentRequestList = [];
     }
 
     instance = {
