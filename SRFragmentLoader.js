@@ -64,7 +64,7 @@ function FragmentLoader(config) {
         var lastTraceReceivedCount = 0;
         var self = this;
 
-        var handleLoaded = function (requestVO, succeeded) {
+        var handleLoaded = function (requestVO, succeeded, xhrEvent = undefined) {
             needFailureReport = false;
 
             var currentTime = new Date();
@@ -81,6 +81,8 @@ function FragmentLoader(config) {
 
             log((succeeded ? 'loaded ' : 'failed ') + requestVO.mediaType + ':' + requestVO.type + ':' + requestVO.startTime + ' (' + req.status + ', ' + latency + 'ms, ' + download + 'ms)');
 
+            let status = xhrEvent ? xhrEvent.target.status : 200;
+
             metricsModel.addHttpRequest(
                 request.mediaType,
                 null,
@@ -91,7 +93,7 @@ function FragmentLoader(config) {
                 request.requestStartDate,
                 requestVO.firstByteDate,
                 requestVO.requestEndDate,
-                req.status,
+                status,
                 request.duration,
                 null, // Was xhr.getAllResponseHeaders, can't get it. TODO: maybe on error, with xhrEvent.target
                 succeeded ? traces : null
@@ -139,8 +141,8 @@ function FragmentLoader(config) {
             eventBus.trigger(Events.LOADING_COMPLETED, {request: request, response: req.response, sender: instance});
         };
 
-        onError = function () {
-            handleLoaded(request, false);
+        onError = function (xhrEvent) {
+            handleLoaded(request, false, xhrEvent);
 
             if (remainingAttempts > 0) {
                 log('Failed loading fragment: ' + request.mediaType + ':' + request.type + ':' + request.startTime + ', retry in ' + mediaPlayerModel.getFragmentRetryInterval() + 'ms' + ' attempts: ' + remainingAttempts);
