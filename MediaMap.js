@@ -16,7 +16,7 @@ class MediaMap {
     * @returns number   (:warning: time must be in second if we want the debug tool (buffer display) to work properly)
     */
     getSegmentTime (segmentView) {
-        return segmentView.segmentId;
+        return segmentView.segmentId / 10;
     }
 
     /**
@@ -26,13 +26,21 @@ class MediaMap {
     * @returns [SegmentView]
     */
     getSegmentList (trackView, beginTime, duration) {
-        let representation = this._manifestHelper.getRepresentation(trackView);
-        let dashjsSegments = representation.segments;
+        let dashjsSegmentList = this._manifestHelper.getSegmentList(trackView);
 
-        let segmentList = [];
+        let segmentList = [],
+            segmentView;
 
-        for (var segment of dashjsSegments) {
+        for (var segment of dashjsSegmentList) {
+            if (beginTime <= segment.mediaStartTime && segment.mediaStartTime <= beginTime + duration) {
+                segmentView = new SegmentView({
+                    trackView,
+                    segmentId: Math.round(segment.mediaStartTime * 10)
+                });
+                segmentList.push(segmentView);
+            }
         }
+        return segmentList;
     }
 }
 
