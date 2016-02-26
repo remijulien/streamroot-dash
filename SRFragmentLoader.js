@@ -74,7 +74,7 @@ function FragmentLoader(config) {
             if (!requestVO.firstByteDate) {
                 requestVO.firstByteDate = requestVO.requestStartDate;
             }
-            requestVO.requestEndDate = currentTime;
+            requestVO.requestEndDate = currentTime; // TODO: Use our bandwidth feedback
 
             latency = (requestVO.firstByteDate.getTime() - requestVO.requestStartDate.getTime());
             download = (requestVO.requestEndDate.getTime() - requestVO.firstByteDate.getTime());
@@ -104,7 +104,7 @@ function FragmentLoader(config) {
         lastTraceTime = request.requestStartDate;
 
         var headers = [];
-        req = requestModifier.modifyRequestHeader(req); // TODO: create helper with method setRequestHeader that fills our headers array?
+        //req = requestModifier.modifyRequestHeader(req); // TODO: create helper with method setRequestHeader that fills our headers array? (and work something out with withCredentials. Throw if use other method)
         if (request.range) {
             headers.push(["Range", 'bytes=' + request.range]);
         }
