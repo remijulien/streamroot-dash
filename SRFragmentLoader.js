@@ -63,7 +63,7 @@ function SRFragmentLoader(config) {
         var lastTraceReceivedCount = 0;
         var self = this;
 
-        var handleLoaded = function (requestVO, succeeded, xhrEvent = undefined) {
+        var handleLoaded = function (requestVO, succeeded, { xhrEvent = undefined, stats = undefined }) {
             needFailureReport = false;
 
             var currentTime = new Date();
@@ -136,12 +136,12 @@ function SRFragmentLoader(config) {
         };
 
         let onSuccess = function (segmentData, stats) {
-            handleLoaded(request, true);
-            eventBus.trigger(Events.LOADING_COMPLETED, {request: request, response: req.response, sender: instance});
+            handleLoaded(request, true, { stats });
+            eventBus.trigger(Events.LOADING_COMPLETED, {request: request, response: segmentData, sender: instance});
         };
 
         let onError = function (xhrEvent) {
-            handleLoaded(request, false, xhrEvent);
+            handleLoaded(request, false, { xhrEvent });
 
             if (remainingAttempts > 0) {
                 log('Failed loading fragment: ' + request.mediaType + ':' + request.type + ':' + request.startTime + ', retry in ' + mediaPlayerModel.getFragmentRetryInterval() + 'ms' + ' attempts: ' + remainingAttempts);
