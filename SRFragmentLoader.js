@@ -218,7 +218,6 @@ function FragmentLoader(config) {
     }
 
     instance = {
-        checkForExistence: checkForExistence,
         load: load,
         abort: abort
     };
