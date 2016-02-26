@@ -4,11 +4,6 @@ import TrackView from './TrackView';
 class MediaMap {
     constructor (manifestHelper) {
         this._manifestHelper = manifestHelper;
-
-        var test = this.getSegmentList.bind(this,
-                                           new TrackView({periodId: 0, adaptationSetId: 0, representationId: 0}),
-                                           0,
-                                           30);
     }
 
     /**
