@@ -1,7 +1,15 @@
 <html>
     <head>
+        <script>
+            window._TEST_ = false;
+            window._DEBUG_ = true;
+
+        </script>
+
         <script src="../build/temp/dash.all.debug.js"></script>
         <script src="./build/dashjs-wrapper.js"></script>
+
+        <script src="http://localhost:9999/dist/streamroot-p2p-bundle.js"></script>
 
     </head>
     <body>
@@ -11,6 +19,9 @@
 
         <script>
             (function() {
+                window.Streamroot.Downloader = window.Streamroot.SRModule; //TODO: remove this canche when we have a build of the last interface version
+
+
                 var videoElementId = "videoPlayer";
                 var videoElement = document.getElementById(videoElementId);
 
@@ -21,7 +32,7 @@
                 if (url !== "http://dash.edgesuite.net/envivio/Envivio-dash2/manifest.mpd") throw new Error("hardcoded stream specific stuff in PlayerInterface._createOnTrackChangeListener. Make the update")
 
                 var player = dashjs.MediaPlayer().create();
-                var dashjsWrapper = new DashjsWrapper(player);
+                var dashjsWrapper = new DashjsWrapper(player, videoElement);
 
                 var autoStart = true;
                 player.initialize(videoElement, url, autoStart);
