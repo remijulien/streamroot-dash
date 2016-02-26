@@ -38,8 +38,7 @@ import MediaPlayerModel from './models/MediaPlayerModel.js';
 import SegmentView from './SegmentView';
 import TrackView from './TrackView';
 
-function FragmentLoader(config) {
-
+function SRFragmentLoader(config) {
     let context = this.context;
     let log = Debug(context).getInstance().log;
     let eventBus = EventBus(context).getInstance();
@@ -228,5 +227,4 @@ function FragmentLoader(config) {
     return instance;
 }
 
-FragmentLoader.__dashjs_factory_name = 'FragmentLoader';
-export default FactoryMaker.getClassFactory(FragmentLoader);
+export default SRFragmentLoader;
