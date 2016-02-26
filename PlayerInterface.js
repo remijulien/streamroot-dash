@@ -20,6 +20,31 @@ class PlayerInterface {
         //TODO: do the actual implementation
     }
 
+    addEventListener (eventName, observer) {
+        if (eventName !== "onTrackChange") {
+            console.error("Tried to listen to an event that wasn't onTrackChange");
+            return;  // IMPORTANT: we need to return to avoid errors in _dispatchInitialOnTrackChange
+        }
+
+        var onTrackChangeListener = this._createOnTrackChangeListener(observer);
+        this._listeners.set(observer, onTrackChangeListener);
+
+        this._player.on('qualityChanged', onTrackChangeListener); //TODO: hardcoded event name. Get it from enum
+    }
+
+    removeEventListener(eventName, observer) {
+        if (eventName !== "onTrackChange") {
+            console.error("Tried to remove listener for an event that wasn't onTrackChange");
+            return;
+        }
+
+        var onTrackChangeListener = this._listeners.get(observer);
+
+        this._player.off('qualityChanged', onTrackChangeListener); //TODO: hardcoded event name. Get it from enum
+
+        this._listeners.delete(observer);
+    }
+
     _createOnTrackChangeListener (observer) {
         return function({ mediaType, streamInfo, oldQuality, newQuality}) {
             var tracks = {};
@@ -33,27 +58,8 @@ class PlayerInterface {
         }
     }
 
-    addEventListener (eventName, observer) {
-        var eventBus = this._manifestHelper.getEventBus();
 
-        if (!eventBus) throw new Error("No eventBus yet");
-        if (eventName !== "onTrackChange") throw new Error("Tried to listen to an event that wasn't onTrackChange")
 
-        var onTrackChangeListener = this._createOnTrackChangeListener(observer)
-        this._listeners.set(observer, onTrackChangeListener});
-
-        eventBus.on('qualityChanged', onTrackChangeListener); //TODO: hardcoded event name. Get it from enum
-    }
-
-    removeEventListener(eventName, observer) {
-        if (eventName !== "onTrackChange") throw new Error("Tried to remove listener for an event that wasn't onTrackChange")
-
-        var onTrackChangeListener = this._listeners.get(observer);
-
-        eventBus.off('qualityChanged', onTrackChangeListener); //TODO: hardcoded event name. Get it from enum
-
-        this._listeners.delete(observer);
-    }
 }
 
 export default PlayerInterface;
