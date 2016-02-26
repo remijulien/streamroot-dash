@@ -168,15 +168,18 @@ function SRFragmentLoader(config) {
             throw new Error("streamrootDownloader is not defined")
         }
 
-        let trackView = new TrackView({
-            periodId: request.mediaInfo.streamInfo.index,
-            adaptationSetId: request.mediaInfo.index,
-            representationId: request.quality
-        });
-        let segmentView = new SegmentView({
-            trackView,
-            segmentId: Math.round(request.startTime * 10)
-        })
+        let segmentView;
+        if (request.type !== "InitializationSegment") {
+            let trackView = new TrackView({
+                periodId: request.mediaInfo.streamInfo.index,
+                adaptationSetId: request.mediaInfo.index,
+                representationId: request.quality
+            });
+            segmentView = new SegmentView({
+                trackView,
+                segmentId: Math.round(request.startTime * 10)
+            });
+        }
 
         let segmentRequest = window.streamrootDownloader.getSegment({
             url: requestModifier.modifyRequestURL(request.url),
