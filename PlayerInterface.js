@@ -1,4 +1,4 @@
-import TrackView from '.TrackView';
+import TrackView from './TrackView';
 
 class PlayerInterface {
 
