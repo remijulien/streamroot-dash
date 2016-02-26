@@ -187,33 +187,6 @@ function FragmentLoader(config) {
         segmentRequestList.push(segmentRequest);
     }
 
-    function checkForExistence(request) {
-
-        if (!request) {
-            eventBus.trigger(Events.CHECK_FOR_EXISTENCE_COMPLETED, { request: request, exists: false });
-            return;
-        }
-
-        var req = new XMLHttpRequest();
-        var isSuccessful = false;
-
-        req.open('HEAD', request.url, true);
-
-        req.onload = function () {
-            if (req.status < 200 || req.status > 299) return;
-            isSuccessful = true;
-            eventBus.trigger(Events.CHECK_FOR_EXISTENCE_COMPLETED, { request: request, exists: true });
-
-        };
-
-        req.onloadend = req.onerror = function () {
-            if (isSuccessful) return;
-            eventBus.trigger(Events.CHECK_FOR_EXISTENCE_COMPLETED, { request: request, exists: false });
-        };
-
-        req.send();
-    }
-
     function load(req) {
         if (!req) {
             eventBus.trigger(Events.LOADING_COMPLETED, {
