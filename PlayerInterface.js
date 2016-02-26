@@ -54,8 +54,8 @@ class PlayerInterface {
                 representationId: newQuality
             });
 
-            observer({ tracks })
-        }
+            observer(tracks);
+        };
     }
 
 
