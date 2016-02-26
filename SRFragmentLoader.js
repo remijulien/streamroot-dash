@@ -79,9 +79,9 @@ function FragmentLoader(config) {
             latency = (requestVO.firstByteDate.getTime() - requestVO.requestStartDate.getTime());
             download = (requestVO.requestEndDate.getTime() - requestVO.firstByteDate.getTime());
 
-            log((succeeded ? 'loaded ' : 'failed ') + requestVO.mediaType + ':' + requestVO.type + ':' + requestVO.startTime + ' (' + req.status + ', ' + latency + 'ms, ' + download + 'ms)');
-
             let status = xhrEvent ? xhrEvent.target.status : 200;
+
+            log((succeeded ? 'loaded ' : 'failed ') + requestVO.mediaType + ':' + requestVO.type + ':' + requestVO.startTime + ' (' + status + ', ' + latency + 'ms, ' + download + 'ms)');
 
             metricsModel.addHttpRequest(
                 request.mediaType,
@@ -109,7 +109,8 @@ function FragmentLoader(config) {
             headers.push(["Range", 'bytes=' + request.range]);
         }
 
-        onProgress = function (event) {
+        let onProgress = function (event) {
+            //TODO: Use our bandwidth feedback
             var currentTime = new Date();
 
             if (firstProgress) {
@@ -135,12 +136,12 @@ function FragmentLoader(config) {
             eventBus.trigger(Events.LOADING_PROGRESS, {request: request});
         };
 
-        onSuccess = function (segmentData, stats) {
+        let onSuccess = function (segmentData, stats) {
             handleLoaded(request, true);
             eventBus.trigger(Events.LOADING_COMPLETED, {request: request, response: req.response, sender: instance});
         };
 
-        onError = function (xhrEvent) {
+        let onError = function (xhrEvent) {
             handleLoaded(request, false, xhrEvent);
 
             if (remainingAttempts > 0) {
