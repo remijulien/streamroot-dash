@@ -154,7 +154,7 @@ function SRFragmentLoader(config) {
                 }, mediaPlayerModel.getFragmentRetryInterval());
             } else {
                 log('Failed loading fragment: ' + request.mediaType + ':' + request.type + ':' + request.startTime + ' no retry attempts left');
-                errHandler.downloadError('content', request.url, req); //TODO: what about this guy?
+                //errHandler.downloadError('content', request.url, req); //TODO: what about this guy?
                 eventBus.trigger(Events.LOADING_COMPLETED, {
                     request: request,
                     bytes: null,
@@ -207,14 +207,14 @@ function SRFragmentLoader(config) {
     }
 
     function abort() {
-        //TODO: didn't do the modifs here
+        //TODO: didn't do the necessary modifs here
         var i,
             req;
         var ln = segmentRequestList.length;
 
         for (i = 0; i < ln; i++) {
             req = segmentRequestList[i];
-            segmentRequestList[i] = null;
+            segmentRequestList[i] = null; // canche: clean this in PR
             if (!req) continue;
             req.abort();
             req = null;
