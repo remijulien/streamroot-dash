@@ -9,8 +9,7 @@ class ManifestHelper {
         let getManifestModel,
             getDashManifestModel,
             getIndexHandler,
-            getTimelineConverter,
-            getEventBus;
+            getTimelineConverter;
 
         function StreamSR () {
             let factory = this.factory,
@@ -37,10 +36,6 @@ class ManifestHelper {
             getTimelineConverter = function () {
                 return factory.getSingletonInstance(context, "TimelineConverter");
             };
-
-            getEventBus = function () {
-                return factory.getSingletonInstance(context, "EventBus");
-            }
         }
 
         player.extend("Stream", StreamSR, true);
@@ -59,10 +54,6 @@ class ManifestHelper {
 
         this._getTimelineConverter = function () {
             return getTimelineConverter ? getTimelineConverter() : undefined;
-        };
-
-        this.getEventBus = function () {
-            return getEventBus ? getEventBus() : undefined;
         };
     }
 
