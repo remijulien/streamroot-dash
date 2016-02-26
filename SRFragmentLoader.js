@@ -28,20 +28,23 @@
  *  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  *  POSSIBILITY OF SUCH DAMAGE.
  */
-import Error from './vo/Error.js';
-import EventBus from './../core/EventBus.js';
-import Events from './../core/events/Events.js';
-import FactoryMaker from '../core/FactoryMaker.js';
-import Debug from '../core/Debug.js';
-import MediaPlayerModel from './models/MediaPlayerModel.js';
+
+
+import Error from '../src/streaming/vo/Error.js';
+import Events from '../src/core/events/Events.js';
 
 import SegmentView from './SegmentView';
 import TrackView from './TrackView';
 
 function SRFragmentLoader(config) {
     let context = this.context;
-    let log = Debug(context).getInstance().log;
-    let eventBus = EventBus(context).getInstance();
+    let factory = this.factory;
+    let parent = this.parent;
+
+
+
+    let log = factory.getSingletonInstance(context, "Debug").log;
+    let eventBus = factory.getSingletonInstance(context, "EventBus");
     let metricsModel = config.metricsModel;
     let errHandler = config.errHandler;
     let requestModifier = config.requestModifier;
@@ -51,7 +54,7 @@ function SRFragmentLoader(config) {
         segmentRequestList;
 
     function setup() {
-        mediaPlayerModel = MediaPlayerModel(context).getInstance();
+        mediaPlayerModel = factory.getSingletonInstance(context, "MediaPlayerModel");
         segmentRequestList = [];
     }
 
