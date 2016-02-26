@@ -140,7 +140,7 @@ function SRFragmentLoader(config) {
 
         let onSuccess = function (segmentData, stats) {
             handleLoaded(request, true, { stats });
-            eventBus.trigger(Events.LOADING_COMPLETED, {request: request, response: segmentData, sender: instance});
+            eventBus.trigger(Events.LOADING_COMPLETED, {request: request, response: segmentData, sender: parent});
         };
 
         let onError = function (xhrEvent) {
