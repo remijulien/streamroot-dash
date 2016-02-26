@@ -1,6 +1,10 @@
+import TrackView from './TrackView';
+
 class ManifestHelper {
 
     constructor (player) {
+
+        this._player = player;
 
         let getManifestModel,
             getDashManifestModel,
@@ -93,6 +97,21 @@ class ManifestHelper {
         return dashManifestModel.getIsDynamic(manifest);
     }
 
+    getTracks () {
+        var tracks = {};
+        for (let type of ["audio", "video"]) {
+            if (this._player.getTracksFor(type)) {
+                let currentTrack = this._player.getCurrentTrackFor(type);
+                let quality = this._player.getQualityFor(type);
+                tracks[type] = new TrackView({
+                    periodId: currentTrack.streamInfo.index,
+                    adaptationSetId: currentTrack.index,
+                    representationId: quality
+                });
+            }
+        }
+        return tracks;
+    }
 }
 
 export default ManifestHelper;

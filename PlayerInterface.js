@@ -2,10 +2,14 @@ import TrackView from './TrackView';
 
 class PlayerInterface {
 
-    constructor (manifestHelper) {
+    constructor (player, manifestHelper) {
+        this._player = player;
         this._manifestHelper = manifestHelper;
 
         this._listeners = new Map();
+
+        this._onStreamInitialized = this._dispatchInitialOnTrackChange.bind(this);
+        this._player.on(dashjs.MediaPlayer.events.STREAM_INITIALIZED, this._onStreamInitialized);
     }
 
     isLive () {
@@ -58,7 +62,13 @@ class PlayerInterface {
         };
     }
 
+    _dispatchInitialOnTrackChange () {
+        let tracks = this._manifestHelper.getTracks();
 
+        for (let [ observer, ...rest] of this._listeners) {
+            observer(tracks);
+        }
+    }
 
 }
 
