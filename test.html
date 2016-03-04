@@ -1,0 +1,31 @@
+<html>
+    <head>
+        <script src="http://cdn.dashjs.org/latest/dash.all.debug.js"></script>
+        <script src="./build/dashjs-wrapper.js"></script>
+
+    </head>
+    <body>
+        <div>
+            <video id="videoPlayer" width="480" height="360" controls muted></video>
+        </div>
+
+        <script>
+            (function() {
+                var videoElementId = "videoPlayer";
+                var videoElement = document.getElementById(videoElementId);
+
+                var url = "http://media.streamroot.io/dash/examples/snow15/snowboard1_720p_dash.mpd";
+                var url = "http://dash.edgesuite.net/envivio/Envivio-dash2/manifest.mpd";
+
+
+
+
+                var player = dashjs.MediaPlayer().create();
+                var dashjsWrapper = new DashjsWrapper(player);
+
+                var autoStart = true;
+                player.initialize(videoElement, url, autoStart);
+            })()
+        </script>
+    </body>
+</html>
