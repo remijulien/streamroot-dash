@@ -91,7 +91,8 @@ class ManifestHelper {
     getTracks () {
         var tracks = {};
         for (let type of ["audio", "video"]) {
-            if (this._player.getTracksFor(type)) {
+            let tracksForType = this._player.getTracksFor(type);
+            if (tracksForType && tracksForType.length > 0) {
                 let currentTrack = this._player.getCurrentTrackFor(type);
                 let quality = this._player.getQualityFor(type);
                 tracks[type] = new TrackView({
