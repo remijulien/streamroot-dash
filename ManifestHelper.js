@@ -35,7 +35,7 @@ class ManifestHelper {
             };
 
             getTimelineConverter = function () {
-                return factory.getSingletonInstance(context, "TimelineConverter");
+                return config.timelineConverter;
             };
         }
 
