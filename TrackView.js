@@ -7,11 +7,15 @@ class TrackView {
     this.representationId = obj.representationId;
   }
 
+  static makeIDString(periodId, adaptationSetId, representationId) {
+    return `P${periodId}A${adaptationSetId}R${representationId}`;
+  }
+
   /**
     * @returns {String}
     */
   viewToString() {
-    return `P${this.periodId}A${this.adaptationSetId}R${this.representationId}`;
+    return TrackView.makeIDString(this.periodId, this.adaptationSetId, this.representationId);
   }
 
   /**
