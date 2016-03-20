@@ -90,10 +90,11 @@ class ManifestHelper {
         return this._getSegmentsGetter().getSegments(representation);
     }
 
-    getSegment (segmentView) {
-        var representation = this.getRepresentation(segmentView.trackView);
-        return representation.segments[segmentView.segmentId];
-    }
+    //TODO: do we need this method?
+    //getSegment (segmentView) {
+    //    var representation = this.getRepresentation(segmentView.trackView); //TODO: implement getRepresentation
+    //    return representation.segments[segmentView.segmentId];
+    //}
 
     isLive () {
         var manifest = this._getManifest(),
