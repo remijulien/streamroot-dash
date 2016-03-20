@@ -78,7 +78,7 @@ class ManifestHelper {
             dashManifestModel = this._getDashManifestModel(),
             timelineConverter = this._getTimelineConverter();
 
-        if (!manifest || !dashManifestModel || !timelineConverter) throw new Error("Tried to get representation we could have access to dash.js manifest internals");
+        if (!manifest || !dashManifestModel || !timelineConverter) throw new Error("Tried to get representation before we could have access to dash.js manifest internals");
 
         var mpd = dashManifestModel.getMpd(manifest);
         var period = dashManifestModel.getRegularPeriods(manifest, mpd)[trackView.periodId];
@@ -99,7 +99,7 @@ class ManifestHelper {
         var manifest = this._getManifest(),
             dashManifestModel = this._getDashManifestModel();
 
-        if (!manifest || !dashManifestModel) throw new Error("Tried to get representation we could have access to dash.js manifest internals");
+        if (!manifest || !dashManifestModel) throw new Error("Tried to get representation before we could have access to dash.js manifest internals");
 
         return dashManifestModel.getIsDynamic(manifest);
     }
