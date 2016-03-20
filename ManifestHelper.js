@@ -1,4 +1,5 @@
 import TrackView from './TrackView';
+import SegmentsGetter from '../src/dash/utils/SegmentsGetter';
 
 class ManifestHelper {
 
@@ -6,16 +7,24 @@ class ManifestHelper {
 
         this._player = player;
 
-        let getManifestModel,
+        let getConfig,
+            getContext,
+            getManifestModel,
             getDashManifestModel,
-            getIndexHandler,
             getTimelineConverter;
 
-        function StreamSR () {
+        function StreamSR (config) {
+
             let factory = this.factory,
-                context = this.context,
-                parent = this.parent,
-                _indexHandler;
+                context = this.context;
+
+            getConfig = function() {
+                return config;
+            };
+
+            getContext = function() {
+                return context;
+            };
 
             getManifestModel = function () {
                 return factory.getSingletonInstance(context, "ManifestModel");
@@ -23,14 +32,6 @@ class ManifestHelper {
 
             getDashManifestModel = function () {
                 return factory.getSingletonInstance(context, "DashManifestModel");
-            };
-
-            getIndexHandler = function () {
-                if (!_indexHandler) {
-                    _indexHandler = parent.createIndexHandler();
-                }
-
-                return _indexHandler;
             };
 
             getTimelineConverter = function () {
@@ -48,30 +49,45 @@ class ManifestHelper {
             return getDashManifestModel ? getDashManifestModel() : undefined;
         };
 
-        this._getIndexHandler = function () {
-            return getIndexHandler ? getIndexHandler() : undefined;
-        };
-
         this._getTimelineConverter = function () {
             return getTimelineConverter ? getTimelineConverter() : undefined;
         };
+
+        this._getConfig = function() {
+            return getConfig();
+        };
+
+        this._getContext = function() {
+            return getContext();
+        };
+
+        this._getSegmentsGetter = function() {
+            if (!this._segmentsGetter) {
+                let context = this._getContext();
+                let config = this._getConfig();
+
+                this._segmentsGetter = SegmentsGetter(context).create(config, this.isLive());
+            }
+
+            return this._segmentsGetter;
+        }
     }
 
     getSegmentList (trackView) {
         var manifest = this._getManifest(),
             dashManifestModel = this._getDashManifestModel(),
-            indexHandler = this._getIndexHandler(),
             timelineConverter = this._getTimelineConverter();
 
-        if (!manifest || !dashManifestModel || !indexHandler || !timelineConverter) throw new Error("Tried to get representation we could have access to dash.js manifest internals");
+        if (!manifest || !dashManifestModel || !timelineConverter) throw new Error("Tried to get representation we could have access to dash.js manifest internals");
 
         var mpd = dashManifestModel.getMpd(manifest);
         var period = dashManifestModel.getRegularPeriods(manifest, mpd)[trackView.periodId];
         var adaptation = dashManifestModel.getAdaptationsForPeriod(manifest, period)[trackView.adaptationSetId];
         var representation = dashManifestModel.getRepresentationsForAdaptation(manifest, adaptation)[trackView.representationId];
         var isDynamic = this.isLive();
+
         representation.segmentAvailabilityRange = timelineConverter.calcSegmentAvailabilityRange(representation, isDynamic); //TODO: we might want to offset that range to get segments that go further than dash.js buffer zone
-        return indexHandler.getSegments(representation);
+        return this._getSegmentsGetter().getSegments(representation);
     }
 
     getSegment (segmentView) {
