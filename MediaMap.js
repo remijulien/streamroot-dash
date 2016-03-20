@@ -7,6 +7,14 @@ class MediaMap {
     }
 
     /**
+     *
+     * @returns boolean
+     */
+    isLive() {
+        return this._manifestHelper.isLive();
+    }
+
+    /**
     * @param segmentView {SegmentView}
     * @returns number   (:warning: time must be in second if we want the debug tool (buffer display) to work properly)
     */
