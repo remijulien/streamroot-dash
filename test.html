@@ -25,11 +25,14 @@
                 var videoElementId = "videoPlayer";
                 var videoElement = document.getElementById(videoElementId);
 
-                var url = "http://media.streamroot.io/dash/examples/snow15/snowboard1_720p_dash.mpd";
-                var url = "http://dash.edgesuite.net/envivio/Envivio-dash2/manifest.mpd";
+                var url = "http://dash.edgesuite.net/envivio/Envivio-dash2/manifest.mpd"; //number based segment template, 9 bitrates
+                var url = "http://media.streamroot.io/dash/examples/snow15/snowboard1_720p_dash.mpd"; //segment base, 3 bitrates
+                var url = "http://wowza-prod.cloudapp.net:1935/testelias/mp4:sintel.mp4/manifest.mpd"; //time based segment template, 1 bitrate
+                var url = "http://localhost/dash/forest/4_sec/forest_4s_ondemand.mpd"; //segment base, 2 bitrates
+                var url = "http://localhost/dash/forest/4_sec/forest_4s_simple.mpd"; //number based segment, 1 bitrate
 
 
-                if (url !== "http://dash.edgesuite.net/envivio/Envivio-dash2/manifest.mpd") throw new Error("hardcoded stream specific stuff in PlayerInterface._createOnTrackChangeListener. Make the update")
+//                if (url !== "http://dash.edgesuite.net/envivio/Envivio-dash2/manifest.mpd") throw new Error("hardcoded stream specific stuff in PlayerInterface._createOnTrackChangeListener. Make the update")
 
                 var player = dashjs.MediaPlayer().create();
                 var dashjsWrapper = new DashjsWrapper(player, videoElement);
