@@ -1,11 +1,13 @@
 import TrackView from './TrackView';
 import SegmentsGetter from '../src/dash/utils/SegmentsGetter';
+import SegmentsCache from './SegmentsCache';
 
 class ManifestHelper {
 
     constructor (player) {
 
         this._player = player;
+        this._segmentsCache = new SegmentsCache(player);
 
         let getConfig,
             getContext,
@@ -74,6 +76,11 @@ class ManifestHelper {
     }
 
     getSegmentList (trackView) {
+
+        if (this._segmentsCache.hasSegments(trackView)) {
+            return this._segmentsCache.getSegments(trackView);
+        }
+
         var manifest = this._getManifest(),
             dashManifestModel = this._getDashManifestModel(),
             timelineConverter = this._getTimelineConverter();
