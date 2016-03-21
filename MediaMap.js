@@ -19,7 +19,7 @@ class MediaMap {
     * @returns number   (:warning: time must be in second if we want the debug tool (buffer display) to work properly)
     */
     getSegmentTime (segmentView) {
-        return segmentView.segmentId / 10;
+        return segmentView.segmentId / 10; //TODO: should not it be a static method of SegmentView?
     }
 
     /**
