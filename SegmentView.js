@@ -8,9 +8,9 @@ class SegmentView {
   */
   static fromArrayBuffer(arrayBuffer){
     var u32Data = new Uint32Array(arrayBuffer),
-        [ periodId, adaptationId, representationId, segmentId ] = u32Data;
+        [ periodId, adaptationSetId, representationId, segmentId ] = u32Data;
     return new SegmentView({
-      trackView: new TrackView({ periodId, adaptationId, representationId }),
+      trackView: new TrackView({ periodId, adaptationSetId, representationId }),
       segmentId
     });
   }
