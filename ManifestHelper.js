@@ -100,12 +100,6 @@ class ManifestHelper {
         return segments;
     }
 
-    //TODO: do we need this method?
-    //getSegment (segmentView) {
-    //    var representation = this.getRepresentation(segmentView.trackView); //TODO: implement getRepresentation
-    //    return representation.segments[segmentView.segmentId];
-    //}
-
     isLive () {
         var manifest = this._getManifest(),
             dashManifestModel = this._getDashManifestModel();
