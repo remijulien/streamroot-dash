@@ -93,7 +93,7 @@ class ManifestHelper {
         var representation = dashManifestModel.getRepresentationsForAdaptation(manifest, adaptation)[trackView.representationId];
         var isDynamic = this.isLive();
 
-        representation.segmentAvailabilityRange = timelineConverter.calcSegmentAvailabilityRange(representation, isDynamic); //TODO: we might want to offset that range to get segments that go further than dash.js buffer zone
+        representation.segmentAvailabilityRange = timelineConverter.calcSegmentAvailabilityRange(representation, isDynamic);
         var segments = this._getSegmentsGetter().getSegments(representation);
         this._segmentsCache.setSegments(trackView, segments);
 
