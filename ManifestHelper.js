@@ -4,14 +4,14 @@ import SegmentsCache from './SegmentsCache';
 
 class ManifestHelper {
 
-    constructor (player) {
+    constructor (player, manifest) {
 
         this._player = player;
+        this._manifest = manifest;
         this._segmentsCache = new SegmentsCache(player);
 
         let getConfig,
             getContext,
-            getManifestModel,
             getDashManifestModel,
             getTimelineConverter;
 
@@ -28,10 +28,6 @@ class ManifestHelper {
                 return context;
             };
 
-            getManifestModel = function () {
-                return factory.getSingletonInstance(context, "ManifestModel");
-            };
-
             getDashManifestModel = function () {
                 return factory.getSingletonInstance(context, "DashManifestModel");
             };
@@ -42,10 +38,6 @@ class ManifestHelper {
         }
 
         player.extend("Stream", StreamSR, true);
-
-        this._getManifest = function () {
-            return getManifestModel ? getManifestModel().getValue() : undefined;
-        };
 
         this._getDashManifestModel = function () {
             return getDashManifestModel ? getDashManifestModel() : undefined;
@@ -81,16 +73,15 @@ class ManifestHelper {
             return this._segmentsCache.getSegments(trackView);
         }
 
-        var manifest = this._getManifest(),
-            dashManifestModel = this._getDashManifestModel(),
+        var dashManifestModel = this._getDashManifestModel(),
             timelineConverter = this._getTimelineConverter();
 
-        if (!manifest || !dashManifestModel || !timelineConverter) throw new Error("Tried to get representation before we could have access to dash.js manifest internals");
+        if (!dashManifestModel || !timelineConverter) throw new Error("Tried to get representation before we could have access to dash.js manifest internals");
 
-        var mpd = dashManifestModel.getMpd(manifest);
-        var period = dashManifestModel.getRegularPeriods(manifest, mpd)[trackView.periodId];
-        var adaptation = dashManifestModel.getAdaptationsForPeriod(manifest, period)[trackView.adaptationSetId];
-        var representation = dashManifestModel.getRepresentationsForAdaptation(manifest, adaptation)[trackView.representationId];
+        var mpd = dashManifestModel.getMpd(this._manifest);
+        var period = dashManifestModel.getRegularPeriods(this._manifest, mpd)[trackView.periodId];
+        var adaptation = dashManifestModel.getAdaptationsForPeriod(this._manifest, period)[trackView.adaptationSetId];
+        var representation = dashManifestModel.getRepresentationsForAdaptation(this._manifest, adaptation)[trackView.representationId];
         var isDynamic = this.isLive();
 
         representation.segmentAvailabilityRange = timelineConverter.calcSegmentAvailabilityRange(representation, isDynamic);
@@ -101,12 +92,11 @@ class ManifestHelper {
     }
 
     isLive () {
-        var manifest = this._getManifest(),
-            dashManifestModel = this._getDashManifestModel();
+        var dashManifestModel = this._getDashManifestModel();
 
-        if (!manifest || !dashManifestModel) throw new Error("Tried to get representation before we could have access to dash.js manifest internals");
+        if (!dashManifestModel) throw new Error("Tried to get representation before we could have access to dash.js manifest internals");
 
-        return dashManifestModel.getIsDynamic(manifest);
+        return dashManifestModel.getIsDynamic(this._manifest);
     }
 
     getTracks () {
