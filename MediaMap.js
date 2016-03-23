@@ -62,13 +62,13 @@ class MediaMap {
     }
 
     getTracksList () {
-        let tracks = this._manifestHelper.getTracks(),
+        let tracks = this._manifestHelper.getAllTracks(),
             trackArray = [];
 
         // Kind of sucks that we don't expect the same format than in onTrackChange
         for (let type of ["audio", "video"]) {
             if (tracks[type]) {
-                trackArray.push(tracks[type]);
+                trackArray.push(...tracks[type]);
             }
         }
 

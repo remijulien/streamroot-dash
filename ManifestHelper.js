@@ -99,7 +99,7 @@ class ManifestHelper {
         return dashManifestModel.getIsDynamic(this._manifest);
     }
 
-    getTracks () {
+    getCurrentTracks () {
         var tracks = {};
         for (let type of ["audio", "video"]) {
             let tracksForType = this._player.getTracksFor(type);
@@ -113,6 +113,37 @@ class ManifestHelper {
                 });
             }
         }
+        return tracks;
+    }
+
+    getAllTracks () {
+        let tracks = {};
+
+        let periods = this._player.getStreamsFromManifest(this._manifest);
+        for (let period of periods) {
+            for (let type of ["audio", "video"]) {
+
+                tracks[type] = [];
+
+                let adaptationSets = this._player.getTracksForTypeFromManifest(type, this._manifest, period);
+                if (!adaptationSets) {
+                    continue;
+                }
+
+                for (let adaptationSet of adaptationSets) {
+                    for (let i = 0; i < adaptationSet.representationCount; i++) {
+                        tracks[type].push(
+                            new TrackView({
+                                periodId: period.index,
+                                adaptationSetId: adaptationSet.index,
+                                representationId: i
+                            })
+                        );
+                    }
+                }
+            }
+        }
+
         return tracks;
     }
 }

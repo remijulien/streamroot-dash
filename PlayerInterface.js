@@ -65,7 +65,7 @@ class PlayerInterface {
     }
 
     _dispatchInitialOnTrackChange () {
-        let tracks = this._manifestHelper.getTracks();
+        let tracks = this._manifestHelper.getCurrentTracks();
 
         for (let [ observer, ...rest] of this._listeners) {
             observer(tracks);
