@@ -50,11 +50,13 @@ class PlayerInterface {
     }
 
     _createOnTrackChangeListener (observer) {
+        let player = this._player;
+
         return function({ mediaType, streamInfo, oldQuality, newQuality}) {
             var tracks = {};
             tracks[mediaType] = new TrackView({
                 periodId: streamInfo.index,
-                adaptationSetId: mediaType === "video" ? 0 : 1, //TODO: hardcoded this for envivio stream
+                adaptationSetId: player.getCurrentTrackFor(mediaType).index,
                 representationId: newQuality
             });
 
