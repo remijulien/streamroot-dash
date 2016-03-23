@@ -27,14 +27,23 @@ class DashjsWrapper {
         }
 
         let manifestHelper = new ManifestHelper(this._player, this._manifest);
-        let mediaMap = new MediaMap(manifestHelper);
         let playerInterface = new PlayerInterface(this._player, manifestHelper);
+        let mediaMap = new MediaMap(manifestHelper);
 
         let p2pConfig = {
             streamrootKey: "ry-yecv4ugi",
             debug: true
         };
-        window.streamrootDownloader = new window.Streamroot.Downloader(playerInterface, this._manifest.url, mediaMap, p2pConfig, SegmentView, this._videoElement) // TODO: Remove this global definition
+
+        // TODO: Remove this global definition
+        window.streamrootDownloader = new window.Streamroot.Downloader(
+            playerInterface,
+            this._manifest.url,
+            mediaMap,
+            p2pConfig,
+            SegmentView,
+            this._videoElement
+        );
 
         this._player.extend("FragmentLoader", SRFragmentLoader, true);
     }
