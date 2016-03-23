@@ -9,7 +9,6 @@ class DashjsWrapper {
     constructor (player, videoElement) {
         this._player = player;
         this._videoElement = videoElement;
-        this._manifestHelper = new ManifestHelper(this._player);
 
         this._player.on(dashjs.MediaPlayer.events.MANIFEST_LOADED, this._onManifestLoaded, this);
     }
@@ -27,8 +26,9 @@ class DashjsWrapper {
             window.streamrootDownloader.dispose();
         }
 
-        let mediaMap = new MediaMap(this._manifestHelper);
-        let playerInterface = new PlayerInterface(this._player, this._manifestHelper);
+        let manifestHelper = new ManifestHelper(this._player);
+        let mediaMap = new MediaMap(manifestHelper);
+        let playerInterface = new PlayerInterface(this._player, manifestHelper);
 
         let p2pConfig = {
             streamrootKey: "ry-yecv4ugi",
