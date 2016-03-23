@@ -23,7 +23,9 @@ class DashjsWrapper {
 
         this._manifestUrl = data.url;
 
-        //TODO: dispose previous module if it exists
+        if (window.streamrootDownloader) {
+            window.streamrootDownloader.dispose();
+        }
 
         let mediaMap = new MediaMap(this._manifestHelper);
         let playerInterface = new PlayerInterface(this._player, this._manifestHelper);
