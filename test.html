@@ -22,6 +22,10 @@
         <div>
             <video id="videoPlayer" width="480" height="360" controls muted></video>
         </div>
+        <div>
+            <button onClick="__player.setQualityFor('video', presentationId.value)">setQualityForVideoTo</button>
+            <input type="text" id="presentationId"/>
+        </div>
 
         <script>
             (function() {
