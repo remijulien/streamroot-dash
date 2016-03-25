@@ -57,7 +57,7 @@ class PlayerInterface {
             tracks[mediaType] = new TrackView({
                 periodId: streamInfo.index,
                 adaptationSetId: player.getCurrentTrackFor(mediaType).index,
-                representationId: newQuality
+                representationId: Number(newQuality)
             });
 
             observer(tracks);
