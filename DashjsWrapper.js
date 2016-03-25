@@ -6,9 +6,10 @@ import PlayerInterface from './PlayerInterface';
 
 class DashjsWrapper {
 
-    constructor (player, videoElement) {
+    constructor (player, videoElement, p2pConfig) {
         this._player = player;
         this._videoElement = videoElement;
+        this._p2pConfig = p2pConfig;
 
         this._player.on(dashjs.MediaPlayer.events.MANIFEST_LOADED, this._onManifestLoaded, this);
     }
@@ -30,17 +31,12 @@ class DashjsWrapper {
         let playerInterface = new PlayerInterface(this._player, manifestHelper);
         let mediaMap = new MediaMap(manifestHelper);
 
-        let p2pConfig = {
-            streamrootKey: "ry-yecv4ugi",
-            debug: true
-        };
-
         // TODO: Remove this global definition
         window.streamrootDownloader = new window.Streamroot.Downloader(
             playerInterface,
             this._manifest.url,
             mediaMap,
-            p2pConfig,
+            this._p2pConfig,
             SegmentView,
             this._videoElement
         );

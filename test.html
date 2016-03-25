@@ -38,7 +38,13 @@
 //                if (url !== "http://dash.edgesuite.net/envivio/Envivio-dash2/manifest.mpd") throw new Error("hardcoded stream specific stuff in PlayerInterface._createOnTrackChangeListener. Make the update")
 
                 var player = dashjs.MediaPlayer().create();
-                var dashjsWrapper = new DashjsWrapper(player, videoElement);
+
+                var p2pConfig = {
+                    streamrootKey: "ry-yecv4ugi",
+                    debug: true
+                };
+
+                var dashjsWrapper = new DashjsWrapper(player, videoElement, p2pConfig);
 
                 var autoStart = true;
                 player.initialize(videoElement, url, autoStart);
