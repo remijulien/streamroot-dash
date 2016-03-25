@@ -6,10 +6,13 @@ import PlayerInterface from './PlayerInterface';
 
 class DashjsWrapper {
 
-    constructor (player, videoElement, p2pConfig) {
+    constructor (player, videoElement, p2pConfig, liveDelay) {
         this._player = player;
         this._videoElement = videoElement;
         this._p2pConfig = p2pConfig;
+        this._liveDelay = liveDelay;
+
+        this._player.setLiveDelay(liveDelay);
 
         this._player.on(dashjs.MediaPlayer.events.MANIFEST_LOADED, this._onManifestLoaded, this);
     }
@@ -28,7 +31,7 @@ class DashjsWrapper {
         }
 
         let manifestHelper = new ManifestHelper(this._player, this._manifest);
-        let playerInterface = new PlayerInterface(this._player, manifestHelper);
+        let playerInterface = new PlayerInterface(this._player, manifestHelper, this._liveDelay);
         let mediaMap = new MediaMap(manifestHelper);
 
         // TODO: Remove this global definition

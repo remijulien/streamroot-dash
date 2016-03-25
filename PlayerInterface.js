@@ -2,9 +2,12 @@ import TrackView from './TrackView';
 
 class PlayerInterface {
 
-    constructor (player, manifestHelper) {
+    constructor (player, manifestHelper, liveDelay) {
         this._player = player;
         this._manifestHelper = manifestHelper;
+        this._liveDelay = liveDelay;
+
+        this.MIN_BUFFER_LEVEL = 10;
 
         this._listeners = new Map();
 
@@ -17,11 +20,13 @@ class PlayerInterface {
     }
 
     getBufferLevelMax () {
-        return 20; //TODO: hardcoded value, do the actual implementation
+        return Math.max(0, this._liveDelay - this.MIN_BUFFER_LEVEL);
     }
 
     setBufferMarginLive(bufferLevel) {
-        //TODO: do the actual implementation
+        this._player.setStableBufferTime(this.MIN_BUFFER_LEVEL + bufferLevel);
+        this._player.setBufferTimeAtTopQuality(this.MIN_BUFFER_LEVEL + bufferLevel);
+        this._player.setBufferTimeAtTopQualityLongForm(this.MIN_BUFFER_LEVEL + bufferLevel); // TODO: can live be "long form" ?
     }
 
     addEventListener (eventName, observer) {

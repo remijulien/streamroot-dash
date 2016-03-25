@@ -59,7 +59,8 @@
                     debug: true
                 };
 
-                var dashjsWrapper = new DashjsWrapper(player, videoElement, p2pConfig);
+                var liveDelay = 30;
+                var dashjsWrapper = new DashjsWrapper(player, videoElement, p2pConfig, liveDelay);
 
                 var autoStart = true;
                 player.initialize(videoElement, url, autoStart);
