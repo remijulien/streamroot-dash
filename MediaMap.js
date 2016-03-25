@@ -41,10 +41,15 @@ class MediaMap {
         }
 
         for (var segment of dashjsSegmentList) {
-            if (beginTime <= segment.mediaStartTime && segment.mediaStartTime <= beginTime + duration) {
+            let startTime = segment.mediaStartTime || segment.startTime;
+            if (segment.timescale) {
+                startTime = startTime / segment.timescale;
+            }
+
+            if (beginTime <= startTime && startTime <= beginTime + duration) {
                 segmentView = new SegmentView({
                     trackView,
-                    segmentId: Math.round(segment.mediaStartTime * 10) //TODO: make this static method of SegmentView
+                    segmentId: Math.round(startTime * 10) //TODO: make this static method of SegmentView
                 });
                 segmentList.push(segmentView);
             }
