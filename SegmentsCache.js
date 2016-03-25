@@ -1,4 +1,3 @@
-import SegmentsGetter from '../src/dash/utils/SegmentsGetter';
 import TrackView from './TrackView';
 
 class SegmentsCache {
