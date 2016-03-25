@@ -38,9 +38,6 @@
                 var url = "http://192.168.0.32:5555/dash/forest/4_sec/forest_4s_ondemand.mpd"; //segment base, 2 bitrates
                 var url = "http://192.168.0.32:5555/dash/forest/4_sec/forest_4s_simple.mpd"; //number based segment, 1 bitrate
 
-
-//                if (url !== "http://dash.edgesuite.net/envivio/Envivio-dash2/manifest.mpd") throw new Error("hardcoded stream specific stuff in PlayerInterface._createOnTrackChangeListener. Make the update")
-
                 var player = dashjs.MediaPlayer().create();
                 //TODO: temporary exposure of dash player to global namespace
                 window.__player = player;
