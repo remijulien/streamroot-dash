@@ -1,0 +1,69 @@
+<html>
+    <head>
+        <script>
+            window._TEST_ = false;
+            window._DEBUG_ = true;
+
+        </script>
+        <script src="http://cdnjs.cloudflare.com/ajax/libs/rickshaw/1.4.6/rickshaw.min.js"> </script>
+        <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/rickshaw/1.4.6/rickshaw.min.css">
+        <script src="http://cdnjs.cloudflare.com/ajax/libs/d3/3.4.9/d3.min.js"> </script>
+
+        <script src="http://streamroot-prod.s3.amazonaws.com/2/scripts/p2pGraph.js"></script>
+        <script src="http://streamroot-prod.s3.amazonaws.com/2/scripts/peerStat.js"></script>
+        <script src="http://sdk.streamroot.io.s3.amazonaws.com/js/3/p2p.js"></script>
+
+        <script src="./dash.all.debug.js"></script>
+        <script src="./dashjs-wrapper.js"></script>
+
+    </head>
+    <body>
+        <div id="manifestType">
+        </div>
+        <div>
+            <video id="videoPlayer" width="480" height="360" controls muted></video>
+        </div>
+        <div>
+            <button onClick="__player.setQualityFor('video', presentationId.value)">setQualityForVideoTo</button>
+            <input type="text" id="presentationId"/>
+        </div>
+
+        <script>
+            (function() {
+                var videoElementId = "videoPlayer";
+                var videoElement = document.getElementById(videoElementId);
+
+                var url = "http://media.streamroot.io/dash/examples/snow15/snowboard1_720p_dash.mpd";
+                var label = "segment base, 3 bitrates";
+                switch (document.location.search) {
+                    case "?1":
+                        url = "http://wowza-prod.cloudapp.net:1935/testelias/mp4:sintel.mp4/manifest.mpd";
+                        label = "time based segment template, 1 bitrate";
+                        break;
+
+                    case "?2":
+                        url = "http://dash.edgesuite.net/envivio/Envivio-dash2/manifest.mpd";
+                        label = "number based segment template, 9 bitrates";
+                        break;
+                }
+
+                document.getElementById("manifestType").innerHTML = "<h1>" + label + "</h1>";
+
+                var player = dashjs.MediaPlayer().create();
+                //TODO: temporary exposure of dash player to global namespace
+                window.__player = player;
+                player.setLiveDelayFragmentCount(20);
+
+                var p2pConfig = {
+                    streamrootKey: "ry-yecv4ugi",
+                    debug: true
+                };
+
+                var dashjsWrapper = new DashjsWrapper(player, videoElement, p2pConfig);
+
+                var autoStart = true;
+                player.initialize(videoElement, url, autoStart);
+            })()
+        </script>
+    </body>
+</html>
