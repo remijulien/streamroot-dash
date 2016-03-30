@@ -21,10 +21,6 @@ class SegmentsCache {
         this._cache[trackViewId] = segments;
     };
 
-    setSegments(trackView, segments) {
-        this._cache[trackView.viewToString()] = segments;
-    }
-
     hasSegments(trackView) {
         return this._cache[trackView.viewToString()] !== undefined;
     }

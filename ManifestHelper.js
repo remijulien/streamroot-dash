@@ -86,7 +86,6 @@ class ManifestHelper {
 
         representation.segmentAvailabilityRange = timelineConverter.calcSegmentAvailabilityRange(representation, isDynamic);
         var segments = this._getSegmentsGetter().getSegments(representation, 0, 0, undefined, 1000000);
-        this._segmentsCache.setSegments(trackView, segments);
 
         return segments;
     }
