@@ -16,7 +16,8 @@
   },
   "dependencies": {
     "babelify": "^6.1.3",
-    "browserify": "~2.35"
+    "browserify": "~2.35",
+    "dashjs": "git+ssh://git@github.com:Dash-Industry-Forum/dash.js.git#development"
   },
   "devDependencies": {
     "babel": "^5.8.23",
