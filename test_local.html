@@ -33,11 +33,15 @@
                 var videoElement = document.getElementById(videoElementId);
 
                 var url = "http://wowza-prod.cloudapp.net:1935/testelias/mp4:sintel.mp4/manifest.mpd"; //time based segment template, 1 bitrate
-                var url = "http://dash.edgesuite.net/envivio/Envivio-dash2/manifest.mpd"; //number based segment template, 9 bitrates
+//                var url = "http://dash.edgesuite.net/envivio/Envivio-dash2/manifest.mpd"; //number based segment template, 9 bitrates
                 var url = "http://media.streamroot.io/dash/examples/snow15/snowboard1_720p_dash.mpd"; //segment base, 3 bitrates
-                var url = "http://192.168.0.32:5555/dash/forest/4_sec/forest_4s_ondemand.mpd"; //segment base, 2 bitrates
-                var url = "http://192.168.0.32:5555/dash/forest/4_sec/forest_4s_simple.mpd"; //number based segment, 1 bitrate
-                var url = "http://wowza.streamroot.io:1935/live/stream1/manifest.mpd"; //number based segment, 1 bitrate
+//                var url = "http://192.168.0.32:5555/dash/forest/4_sec/forest_4s_ondemand.mpd"; //segment base, 2 bitrates
+//                var url = "http://192.168.0.32:5555/dash/forest/4_sec/forest_4s_simple.mpd"; //number based segment, 1 bitrate
+//                var url = "http://wowza.streamroot.io:1935/live/stream1/manifest.mpd"; //live
+//                var url = "http://vm2.dashif.org/livesim/start_1800/testpic_2s/Manifest.mpd"; //live
+//                var url = "http://vm2.dashif.org/livesim/testpic_2s/Manifest.mpd"; //live
+//                var url = "http://irtdashreference-i.akamaihd.net/dash/live/901161/bfs/manifestBR.mpd"; //live
+//                var url = "https://wowzaec2demo.streamlock.net/live/bigbuckbunny/manifest_mpm4sav_mvtime.mpd"; //live
 
                 var player = dashjs.MediaPlayer().create();
                 //TODO: temporary exposure of dash player to global namespace
