@@ -1,0 +1,30 @@
+{
+  "name": "streamroot-dash",
+  "description": "A module that wraps Streamroot p2p module and dash.js together",
+  "author": {
+    "name": "StreamRoot",
+    "email": "contact@streamroot.io"
+  },
+  "version": "1.0.0",
+  "main": "lib/DashjsWrapper.js",
+  "scripts": {
+  },
+  "browserify": {
+    "transform": [
+      "babelify"
+    ]
+  },
+  "dependencies": {
+    "babelify": "^6.1.3",
+    "browserify": "~2.35"
+  },
+  "devDependencies": {
+    "babel": "^5.8.23",
+    "grunt": "^0.4.5",
+    "grunt-browserify": "4.0.1",
+    "grunt-contrib-uglify": "^1.0.0",
+    "matchdep": "0.3.0",
+    "should": "^8.1.1"
+  },
+  "private": true
+}
