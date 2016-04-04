@@ -38,6 +38,24 @@
                 __player.attachSource(event.target.value);
             }
 
+            function getURLParams(url) {
+                if (!url) {
+                    return {};
+                }
+
+                var search = url.substring(1); //removing '?'
+                var paramValueList = search.split("&");
+                var params = {};
+                paramValueList.forEach(function(entry){
+                    var paramValue = entry.split("=");
+                    if (entry) {
+                        params[paramValue[0]] = decodeURIComponent(paramValue[1]);
+                    }
+                });
+
+                return params;
+            }
+
             (function() {
                 var videoElementId = "videoPlayer";
                 var videoElement = document.getElementById(videoElementId);
@@ -51,7 +69,8 @@
 //                var url = "https://wowzaec2demo.streamlock.net/live/bigbuckbunny/manifest_mpm4sav_mvtime.mpd"; //live
 
                 var mpdSelector = document.getElementById("mpdSelector");
-                var url = mpdSelector.value
+                var url = getURLParams(document.location.search)["mpd"]
+                            || mpdSelector.value
                             || "http://wowza-prod.cloudapp.net:1935/testelias/mp4:sintel.mp4/manifest.mpd";
 
                 mpdSelector.value = url;
