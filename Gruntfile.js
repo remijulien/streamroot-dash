@@ -1,12 +1,10 @@
 module.exports = function(grunt) {
     require("matchdep").filterDev("grunt-*").forEach(grunt.loadNpmTasks);
 
-    grunt.registerTask('default', ['browserify']);
-
     grunt.initConfig({
         pkg: grunt.file.readJSON('package.json'),
         browserify: {
-            main: {
+            debug: {
                 src: 'lib/DashjsWrapper.js',
                 dest: 'dist/dashjs-wrapper.debug.js',
                 options:  {
@@ -47,8 +45,6 @@ module.exports = function(grunt) {
         }
     });
 
-
+    grunt.registerTask('debug_watch', ['browserify:debug']);
     grunt.registerTask('build', 'build dist script', ['browserify:dist', 'uglify:dist']);
-
-
 }
