@@ -1,0 +1,97 @@
+<html>
+    <head>
+        <script>
+            window._TEST_ = false;
+            window._DEBUG_ = true;
+        </script>
+
+        <!-- dash.js -->
+        <script src="dash.all.debug.js"></script>
+
+        <!-- streamroot-dash wrapper -->
+        <script src="../dist/dashjs-wrapper.js"></script>
+
+        <!-- streamroot-p2p module -->
+        <script src="http://lib.streamroot.io/3/p2p.js"></script>
+
+        <!-- p2p graphics and peer stats -->
+        <script src="http://cdn.streamroot.io/2/scripts/p2pGraph.js"></script>
+        <script src="http://cdn.streamroot.io/2/scripts/peerStat.js"></script>
+
+        <!-- graph dependencies -->
+        <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/rickshaw/1.4.6/rickshaw.min.css">
+        <script src="http://cdnjs.cloudflare.com/ajax/libs/rickshaw/1.4.6/rickshaw.min.js"> </script>
+        <script src="http://cdnjs.cloudflare.com/ajax/libs/d3/3.4.9/d3.min.js"> </script>
+    </head>
+    <body>
+        <div id="mainfestSelection" />
+            <select id="mpdSelector" name="mpdSelector" onchange="onMPDSelected(event)">
+                <option value="http://wowza.streamroot.io/testelias/mp4:sintel.mp4/manifest.mpd">Sintel 14:48(time based segment template | 1 video & 1 audio)</option>
+                <option value="http://media.streamroot.io/dash/examples/snow15/snowboard1_720p_dash.mpd">Snowboard 1:30(segment base | 3 video & 1 audio)</option>
+                <option value="http://dash.edgesuite.net/envivio/Envivio-dash2/manifest.mpd">Envivio 3:13(number based segment template | 9 video & 1 audio)</option>
+            </select>
+        <div>
+        <div>
+            <video id="videoPlayer" width="480" height="360" controls muted></video>
+        </div>
+        <div>
+            <button onClick="__player.setQualityFor('video', presentationId.value)">setQualityForVideoTo</button>
+            <input type="text" id="presentationId"/>
+        </div>
+
+        <script>
+            (function() {
+                function onMPDSelected(event) {
+                    var mpdUrl = document.getElementById("mpdSelector").value;
+                    window.location = window.location.origin + window.location.pathname + "?mpd=" + encodeURIComponent(mpdUrl);
+                }
+
+                function getURLParams(url) {
+                    if (!url) {
+                        return {};
+                    }
+
+                    var search = url.substring(1); //removing '?'
+                    var paramValueList = search.split("&");
+                    var params = {};
+                    paramValueList.forEach(function(entry){
+                        var paramValue = entry.split("=");
+                        if (entry) {
+                            params[paramValue[0]] = decodeURIComponent(paramValue[1]);
+                        }
+                    });
+
+                    return params;
+                }
+
+                var player = dashjs.MediaPlayer().create();
+                player.setLiveDelayFragmentCount(20);
+
+                var videoElementId = "videoPlayer";
+                var videoElement = document.getElementById(videoElementId);
+
+                var p2pConfig = {
+                    streamrootKey: "ry-tguzre2t",
+                    debug: true
+                };
+
+                var liveDelay = 30;
+
+                var dashjsWrapper = new DashjsWrapper(player, videoElement, p2pConfig, liveDelay);
+
+                var mpdSelector = document.getElementById("mpdSelector");
+                var url = getURLParams(document.location.search)["mpd"]
+                        || mpdSelector.value
+                        || "http://wowza.streamroot.io/testelias/mp4:sintel.mp4/manifest.mpd";
+                mpdSelector.value = url;
+
+                var autoStart = true;
+
+                player.initialize(videoElement, url, autoStart);
+
+                //TODO: temporary exposure of dash player to global namespace
+                window.__player = player;
+            })();
+        </script>
+    </body>
+</html>
