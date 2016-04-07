@@ -5,16 +5,23 @@
             window._DEBUG_ = true;
         </script>
 
-        <script src="http://cdnjs.cloudflare.com/ajax/libs/rickshaw/1.4.6/rickshaw.min.js"> </script>
-        <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/rickshaw/1.4.6/rickshaw.min.css">
-        <script src="http://cdnjs.cloudflare.com/ajax/libs/d3/3.4.9/d3.min.js"> </script>
+        <!-- dash.js -->
+        <script src="http://localhost:5555/dist/dash.all.debug.js"></script>
 
-        <script src="http://localhost:9999/graphs/public/p2pGraph.js"></script>
-        <script src="http://localhost:9999/graphs/public/peerStat.js"></script>
+        <!-- streamroot-dash wrapper -->
+        <script src="../dist/dashjs-wrapper.debug.js"></script>
+
+        <!-- streamroot-p2p module -->
         <script src="http://localhost:9999/dist/streamroot-p2p-bundle.js"></script>
 
-        <script src="http://localhost:5555/dist/dash.all.debug.js"></script>
-        <script src="../dist/dashjs-wrapper.debug.js"></script>
+        <!-- p2p graphics and peer stats -->
+        <script src="http://localhost:9999/graphs/public/p2pGraph.js"></script>
+        <script src="http://localhost:9999/graphs/public/peerStat.js"></script>
+
+        <!-- graph dependencies -->
+        <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/rickshaw/1.4.6/rickshaw.min.css">
+        <script src="http://cdnjs.cloudflare.com/ajax/libs/rickshaw/1.4.6/rickshaw.min.js"> </script>
+        <script src="http://cdnjs.cloudflare.com/ajax/libs/d3/3.4.9/d3.min.js"> </script>
 
     </head>
     <body>
