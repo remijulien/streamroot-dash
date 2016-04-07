@@ -22,7 +22,6 @@
         <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/rickshaw/1.4.6/rickshaw.min.css">
         <script src="http://cdnjs.cloudflare.com/ajax/libs/rickshaw/1.4.6/rickshaw.min.js"> </script>
         <script src="http://cdnjs.cloudflare.com/ajax/libs/d3/3.4.9/d3.min.js"> </script>
-
     </head>
     <body>
         <div id="mainfestSelection" />
@@ -65,6 +64,9 @@
                     return params;
                 }
 
+                var player = dashjs.MediaPlayer().create();
+                player.setLiveDelayFragmentCount(20);
+
                 var videoElementId = "videoPlayer";
                 var videoElement = document.getElementById(videoElementId);
 
@@ -76,28 +78,28 @@
 //                var url = "http://irtdashreference-i.akamaihd.net/dash/live/901161/bfs/manifestBR.mpd"; //live
 //                var url = "https://wowzaec2demo.streamlock.net/live/bigbuckbunny/manifest_mpm4sav_mvtime.mpd"; //live
 
-                var mpdSelector = document.getElementById("mpdSelector");
-                var url = getURLParams(document.location.search)["mpd"]
-                            || mpdSelector.value
-                            || "http://wowza-prod.cloudapp.net:1935/testelias/mp4:sintel.mp4/manifest.mpd";
-
-                mpdSelector.value = url;
-
-                var player = dashjs.MediaPlayer().create();
-                //TODO: temporary exposure of dash player to global namespace
-                window.__player = player;
-
                 var p2pConfig = {
                     streamrootKey: "ry-yecv4ugi",
                     debug: true
                 };
 
                 var liveDelay = 30;
+
                 var dashjsWrapper = new DashjsWrapper(player, videoElement, p2pConfig, liveDelay);
 
+                var mpdSelector = document.getElementById("mpdSelector");
+                var url = getURLParams(document.location.search)["mpd"]
+                        || mpdSelector.value
+                        || "http://wowza-prod.cloudapp.net:1935/testelias/mp4:sintel.mp4/manifest.mpd";
+                mpdSelector.value = url;
+
                 var autoStart = true;
+
                 player.initialize(videoElement, url, autoStart);
-            })()
+
+                //TODO: temporary exposure of dash player to global namespace
+                window.__player = player;
+            })();
         </script>
     </body>
 </html>

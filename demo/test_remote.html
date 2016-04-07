@@ -41,9 +41,6 @@
 
         <script>
             (function() {
-                var videoElementId = "videoPlayer";
-                var videoElement = document.getElementById(videoElementId);
-
                 function onMPDSelected(event) {
                     var mpdUrl = document.getElementById("mpdSelector").value;
                     window.location = window.location.origin + window.location.pathname + "?mpd=" + encodeURIComponent(mpdUrl);
@@ -68,9 +65,10 @@
                 }
 
                 var player = dashjs.MediaPlayer().create();
-                //TODO: temporary exposure of dash player to global namespace
-                window.__player = player;
                 player.setLiveDelayFragmentCount(20);
+
+                var videoElementId = "videoPlayer";
+                var videoElement = document.getElementById(videoElementId);
 
                 var p2pConfig = {
                     streamrootKey: "ry-yecv4ugi",
@@ -78,6 +76,7 @@
                 };
 
                 var liveDelay = 30;
+
                 var dashjsWrapper = new DashjsWrapper(player, videoElement, p2pConfig, liveDelay);
 
                 var mpdSelector = document.getElementById("mpdSelector");
@@ -87,8 +86,12 @@
                 mpdSelector.value = url;
 
                 var autoStart = true;
+
                 player.initialize(videoElement, url, autoStart);
-            })()
+
+                //TODO: temporary exposure of dash player to global namespace
+                window.__player = player;
+            })();
         </script>
     </body>
 </html>
