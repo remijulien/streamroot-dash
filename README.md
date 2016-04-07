@@ -54,6 +54,8 @@ Streamroot p2p module wrapper for dash.js. It enables [Streamroot's p2p](http://
 
 1. Specify you streamroot key in p2p config object. If you don't have it, go to [Streamroot's dashboard](http://dashboard.streamroot.io/) and sign up. It's free.
 
+1. To see some p2p traffic open several browser tabs/windows playing the same manifest(so there will be peers to exchange p2p traffic).
+
 ## Important notes
 
 The supported version of dahs.js -- v2.1 had not been released yet, so you'll have to build dash.js yourself from its [development brach](https://github.com/Dash-Industry-Forum/dash.js/tree/development), otherwise **p2p won't work**.
