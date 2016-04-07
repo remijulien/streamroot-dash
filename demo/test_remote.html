@@ -24,8 +24,13 @@
         <script src="http://cdnjs.cloudflare.com/ajax/libs/d3/3.4.9/d3.min.js"> </script>
     </head>
     <body>
-        <div id="manifestType">
-        </div>
+        <div id="mainfestSelection" />
+            <select id="mpdSelector" name="mpdSelector" onchange="onMPDSelected(event)">
+                <option value="http://wowza.streamroot.io/testelias/mp4:sintel.mp4/manifest.mpd">Sintel 14:48(time based segment template | 1 video & 1 audio)</option>
+                <option value="http://media.streamroot.io/dash/examples/snow15/snowboard1_720p_dash.mpd">Snowboard 1:30(segment base | 3 video & 1 audio)</option>
+                <option value="http://dash.edgesuite.net/envivio/Envivio-dash2/manifest.mpd">Envivio 3:13(number based segment template | 9 video & 1 audio)</option>
+            </select>
+        <div>
         <div>
             <video id="videoPlayer" width="480" height="360" controls muted></video>
         </div>
@@ -39,21 +44,28 @@
                 var videoElementId = "videoPlayer";
                 var videoElement = document.getElementById(videoElementId);
 
-                var url = "http://media.streamroot.io/dash/examples/snow15/snowboard1_720p_dash.mpd";
-                var label = "segment base, 3 bitrates";
-                switch (document.location.search) {
-                    case "?1":
-                        url = "http://wowza-prod.cloudapp.net:1935/testelias/mp4:sintel.mp4/manifest.mpd";
-                        label = "time based segment template, 1 bitrate";
-                        break;
-
-                    case "?2":
-                        url = "http://dash.edgesuite.net/envivio/Envivio-dash2/manifest.mpd";
-                        label = "number based segment template, 9 bitrates";
-                        break;
+                function onMPDSelected(event) {
+                    var mpdUrl = document.getElementById("mpdSelector").value;
+                    window.location = window.location.origin + window.location.pathname + "?mpd=" + encodeURIComponent(mpdUrl);
                 }
 
-                document.getElementById("manifestType").innerHTML = "<h1>" + label + "</h1>";
+                function getURLParams(url) {
+                    if (!url) {
+                        return {};
+                    }
+
+                    var search = url.substring(1); //removing '?'
+                    var paramValueList = search.split("&");
+                    var params = {};
+                    paramValueList.forEach(function(entry){
+                        var paramValue = entry.split("=");
+                        if (entry) {
+                            params[paramValue[0]] = decodeURIComponent(paramValue[1]);
+                        }
+                    });
+
+                    return params;
+                }
 
                 var player = dashjs.MediaPlayer().create();
                 //TODO: temporary exposure of dash player to global namespace
@@ -67,6 +79,12 @@
 
                 var liveDelay = 30;
                 var dashjsWrapper = new DashjsWrapper(player, videoElement, p2pConfig, liveDelay);
+
+                var mpdSelector = document.getElementById("mpdSelector");
+                var url = getURLParams(document.location.search)["mpd"]
+                        || mpdSelector.value
+                        || "http://wowza-prod.cloudapp.net:1935/testelias/mp4:sintel.mp4/manifest.mpd";
+                mpdSelector.value = url;
 
                 var autoStart = true;
                 player.initialize(videoElement, url, autoStart);

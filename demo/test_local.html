@@ -27,10 +27,11 @@
     <body>
         <div id="mainfestSelection" />
             <select id="mpdSelector" name="mpdSelector" onchange="onMPDSelected(event)">
+                <option value="http://wowza.streamroot.io/testelias/mp4:sintel.mp4/manifest.mpd">Sintel 14:48(time based segment template | 1 video & 1 audio)</option>
+                <option value="http://media.streamroot.io/dash/examples/snow15/snowboard1_720p_dash.mpd">Snowboard 1:30(segment base | 3 video & 1 audio)</option>
                 <option value="http://dash.edgesuite.net/envivio/Envivio-dash2/manifest.mpd">Envivio 3:13(number based segment template | 9 video & 1 audio)</option>
-                <option value="http://media.streamroot.io/dash/examples/snow15/snowboard1_720p_dash.mpd">Snowboard 1:30(segment template | 3 video & 1 audio)</option>
-                <option value="http://wowza-prod.cloudapp.net:1935/testelias/mp4:sintel.mp4/manifest.mpd">Sintel 14:48(time based segment template | 1 video & 1 audio)</option>
             </select>
+        <div>
         <div>
             <video id="videoPlayer" width="480" height="360" controls muted></video>
         </div>
@@ -40,30 +41,30 @@
         </div>
 
         <script>
-
-            function onMPDSelected(event) {
-                __player.attachSource(event.target.value);
-            }
-
-            function getURLParams(url) {
-                if (!url) {
-                    return {};
+            (function() {
+                function onMPDSelected(event) {
+                    var mpdUrl = document.getElementById("mpdSelector").value;
+                    window.location = window.location.origin + window.location.pathname + "?mpd=" + encodeURIComponent(mpdUrl);
                 }
 
-                var search = url.substring(1); //removing '?'
-                var paramValueList = search.split("&");
-                var params = {};
-                paramValueList.forEach(function(entry){
-                    var paramValue = entry.split("=");
-                    if (entry) {
-                        params[paramValue[0]] = decodeURIComponent(paramValue[1]);
+                function getURLParams(url) {
+                    if (!url) {
+                        return {};
                     }
-                });
 
-                return params;
-            }
+                    var search = url.substring(1); //removing '?'
+                    var paramValueList = search.split("&");
+                    var params = {};
+                    paramValueList.forEach(function(entry){
+                        var paramValue = entry.split("=");
+                        if (entry) {
+                            params[paramValue[0]] = decodeURIComponent(paramValue[1]);
+                        }
+                    });
 
-            (function() {
+                    return params;
+                }
+
                 var videoElementId = "videoPlayer";
                 var videoElement = document.getElementById(videoElementId);
 
