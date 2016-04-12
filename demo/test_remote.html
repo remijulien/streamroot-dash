@@ -35,8 +35,8 @@
             <video id="videoPlayer" width="480" height="360" controls muted></video>
         </div>
         <div>
-            <button onClick="__player.setQualityFor('video', presentationId.value)">setQualityForVideoTo</button>
-            <input type="text" id="presentationId"/>
+            <button id="videoQualitySwitcher">setQualityForVideoTo</button>
+            <input id="presentationId" type="text"/>
         </div>
 
         <script>
@@ -62,6 +62,12 @@
                     });
 
                     return params;
+                }
+
+                // quality switch button click handler
+                document.getElementById("videoQualitySwitcher").onclick = function() {
+                    player.setAutoSwitchQualityFor('video', false);
+                    player.setQualityFor('video', document.getElementById("presentationId").value);
                 }
 
                 var player = dashjs.MediaPlayer().create();
@@ -90,9 +96,6 @@
                 var autoStart = true;
 
                 player.initialize(videoElement, url, autoStart);
-
-                //TODO: temporary exposure of dash player to global namespace
-                window.__player = player;
             })();
         </script>
     </body>
