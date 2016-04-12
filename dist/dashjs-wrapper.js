@@ -628,9 +628,11 @@ function SRFragmentLoader(config) {
     var eventBus = factory.getSingletonInstance(context, "EventBus");
 
     var requestModifier = config.requestModifier;
+    var metricsModel = config.metricsModel;
 
     var instance = undefined,
-        srLoader = undefined;
+        srLoader = undefined,
+        _abort = undefined;
 
     function setup() {
         if (!window.streamrootDownloader) {
@@ -688,7 +690,39 @@ function SRFragmentLoader(config) {
         var segmentView = _getSegmentViewForRequest(request);
         var srRequest = _getSRRequest(request, headers);
 
-        var onSuccess = function onSuccess(segmentData) {
+        var requestStartDate = new Date();
+        var lastTraceDate = requestStartDate;
+        var isFirstProgress = true;
+        var traces = [];
+        var lastTraceReceivedCount = 0;
+
+        var sendHttpRequestMetric = function sendHttpRequestMetric(isSuccess, responseCode) {
+
+            request.requestStartDate = requestStartDate;
+            request.firstByteDate = request.firstByteDate || requestStartDate;
+            request.requestEndDate = new Date();
+
+            metricsModel.addHttpRequest(request.mediaType, //mediaType
+            null, //tcpId
+            request.type, //type
+            request.url, //url
+            null, //actualUrl
+            request.serviceLocation || null, //serviceLocation
+            request.range || null, //range
+            request.requestStartDate, //tRequest
+            request.firstByteDate, //tResponce
+            request.requestEndDate, //tFinish
+            responseCode, //responseCode
+            request.duration, //mediaDuration
+            null, //responseHeaders
+            isSuccess ? traces : null //traces
+            );
+        };
+
+        var onSuccess = function onSuccess(segmentData, stats) {
+
+            sendHttpRequestMetric(true, 200);
+
             eventBus.trigger(_node_modulesDashjsSrcCoreEventsEventsJs2['default'].LOADING_COMPLETED, {
                 request: request,
                 response: segmentData,
@@ -696,29 +730,63 @@ function SRFragmentLoader(config) {
             });
         };
 
-        var onProgress = function onProgress() {
+        var onProgress = function onProgress(stats) {
+
+            var currentDate = new Date();
+
+            if (isFirstProgress) {
+                isFirstProgress = false;
+                request.firstByteDate = currentDate;
+            }
+
+            var bytesReceived = 0;
+            if (stats.cdnDownloaded) {
+                bytesReceived += stats.cdnDownloaded;
+            }
+            if (stats.p2pDownloaded) {
+                bytesReceived += stats.p2pDownloaded;
+            }
+
+            traces.push({
+                s: lastTraceDate,
+                d: currentDate.getTime() - lastTraceDate.getTime(),
+                b: [bytesReceived ? bytesReceived - lastTraceReceivedCount : 0]
+            });
+
+            lastTraceDate = currentDate;
+            lastTraceReceivedCount = bytesReceived;
+
             eventBus.trigger(_node_modulesDashjsSrcCoreEventsEventsJs2['default'].LOADING_PROGRESS, {
                 request: request
             });
         };
 
-        var onError = function onError() {
+        var onError = function onError(xhrEvent) {
+
+            sendHttpRequestMetric(false, xhrEvent.target.status);
+
             eventBus.trigger(_node_modulesDashjsSrcCoreEventsEventsJs2['default'].LOADING_COMPLETED, {
                 request: undefined,
                 error: new Error(FRAGMENT_LOADER_ERROR_LOADING_FAILURE, "failed loading fragment")
             });
         };
 
-        srLoader.getSegment(srRequest, {
+        _abort = srLoader.getSegment(srRequest, {
             onSuccess: onSuccess,
             onProgress: onProgress,
             onError: onError
         }, segmentView);
     }
 
-    function abort() {}
+    function abort() {
+        if (_abort) {
+            _abort();
+        }
+    }
 
-    function reset() {}
+    function reset() {
+        abort();
+    }
 
     instance = {
         load: load,
